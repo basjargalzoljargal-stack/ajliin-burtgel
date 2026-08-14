@@ -6239,7 +6239,20 @@ function moveItem(id, fromTab, toTab) {
 // зэргийг нэмж байгаад (жишээ нь файл шалгах гэх мэт шалтгаанаар) өөр таб руу шилжиж, буцаад ирэхэд
 // бичиж байсан зүйл нь бүрмөсөн алга болдог асуудалтай байсан. Одоо таб солиход нээлттэй форм ЗАВСАРДАХГҮЙ —
 // зөвхөн тухайн формыг анх нээсэн таб руу буцаж ирэхэд л (S.formTab тохирсон үед) дахин харагдана.
-function setTab(id){S.tab=id;goTop();render();}
+function setTab(id){
+  S.tab=id;
+  // Хэрэглэгчийн шийдвэрээр: Админ Хуанли руу анх удаа (session-д) ороход "Бүгд" (байгууллагын, шүүлтгүй)
+  // харагдацаар л нээгдэх ёстой. Гэвч session сэргэхэд (localStorage-с автоматаар нэвтрэхэд) S.staffFilter нь
+  // ЮУ ч эрхээс үл хамааран ӨӨРИЙН ID-аар автоматаар тавигддаг тул (доогуур ерөнхий логик, зөвхөн Хуанлид
+  // хамаарахгүй тул энд бус тэнд өөрчлөхгүй) энд НЭГ л удаа, зөвхөн Админ өөрийн ID-аараа шүүгдэж байвал
+  // (өөр хүнийг ТОДОРХОЙ сонгосон бол хөндөхгүй) "Бүгд" болгож нээнэ.
+  if(id==='calendar'&&!S._calDefaultApplied){
+    S._calDefaultApplied=true;
+    var me=currentStaffObj();
+    if(me&&me.isAdmin&&S.staffFilter&&String(S.staffFilter)===String(S.currentUser))S.staffFilter='';
+  }
+  goTop();render();
+}
 function toggleForm(){S.showForm=!S.showForm;if(S.showForm){S.form={date:todayStr()};S.pendingFiles=[];S.editId=null;S.formTab=S.tab;}else{S.editId=null;S.formTab=null;}render();}
 function editItem(id){
   const item=(S.data[S.tab]||[]).find(i=>i.id===id);
