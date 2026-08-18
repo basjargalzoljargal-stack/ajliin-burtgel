@@ -3808,7 +3808,7 @@ function openReviewModal(source,letterId,iid){
     +'<label class="fl">Биелэлт (шаардлагатай бол засаад доор батлах эсвэл буцаана уу)</label><textarea id="rv_fulfillment" rows="4" style="width:100%;font-size:13px;border:.5px solid #26395a;border-radius:6px;padding:8px;font-family:inherit;margin-bottom:8px">'+esc(it.fulfillment||'')+'</textarea>'
     +'<div style="display:flex;gap:8px;margin-bottom:14px">'
     +'<button class="btn btn-g" style="flex:1" onclick="saveReviewedFulfillment(\''+source+'\',\''+lid+'\',\''+iid+'\')"><i class="ti ti-device-floppy"></i>Зөвхөн засвар хадгалах</button>'
-    +'<button class="btn btn-p" style="flex:1;background:#059669" onclick="approveFulfillment(\''+source+'\',\''+lid+'\',\''+iid+'\')"><i class="ti ti-check"></i>Батлах</button>'
+    +'<button class="btn btn-p" style="flex:1;background:#059669;color:#fff" onclick="approveFulfillment(\''+source+'\',\''+lid+'\',\''+iid+'\')"><i class="ti ti-check"></i>Батлах</button>'
     +'</div>'
     +'<div style="font-size:11.5px;color:#8aaace;margin-bottom:12px"><i class="ti ti-info-circle" style="margin-right:3px"></i>"Батлах" дарсны дараа л энэ биелэлт тайлан нэгтгэгчид харагдана.</div>'
     +'<div style="border-top:.5px dashed #26395a;padding-top:12px">'
@@ -4627,7 +4627,7 @@ function feedbackResponseInboxBannerHtml(){
     var respondedCount=fr.targetStaffIds.filter(function(sid){return fr.responses&&fr.responses[sid];}).length;
     return '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;background:#16213a;border-radius:8px;margin-top:6px;flex-wrap:wrap">'
       +'<div><strong style="font-size:13px;color:#E7EDF7">'+esc(l.subject||'Ирсэн бичиг')+'</strong>'+(l.from?' <span style="color:#8aaace;font-size:12px">· '+esc(l.from)+'</span>':'')+'<div style="font-size:11px;color:#8aaace;margin-top:2px">'+respondedCount+'/'+fr.targetStaffIds.length+' хариулсан</div></div>'
-      +'<button class="btn btn-p" style="padding:6px 14px;background:#34d399;border-color:#34d399" onclick="openFeedbackResponsesModal(\''+l.id+'\')"><i class="ti ti-eye"></i>Харах</button>'
+      +'<button class="btn btn-p" style="padding:6px 14px;background:#34d399;border-color:#34d399;color:#053b2c" onclick="openFeedbackResponsesModal(\''+l.id+'\')"><i class="ti ti-eye"></i>Харах</button>'
       +'</div>';
   }).join('');
   return '<div class="card" style="border-left:3px solid #34d399;margin-bottom:16px"><h3 style="font-size:14px;font-weight:500;margin:0 0 4px"><i class="ti ti-message-circle-2" style="color:#34d399;margin-right:6px"></i>Танай асуусан саналд шинэ хариу ирлээ ('+updated.length+')</h3><p style="font-size:12px;color:#8aaace;margin:0 0 4px">Доорх бичгүүдэд шинэ санал ирсэн байна.</p>'+rows+'</div>';
@@ -5980,7 +5980,7 @@ function eventWeekFilesPanelHtml(){
   var curYear=String(new Date().getFullYear());
   var addForm='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">'
     +'<input type="date" id="ev_wf_date" style="font-size:12.5px;padding:6px 8px;border-radius:6px;border:.5px solid #26395a;background:#0d1626;color:#E7EDF7" title="Файлын нэрнээс огноо олдохгүй бол энэ огноог ашиглана">'
-    +'<label class="btn btn-p" style="background:#059669;cursor:pointer;font-size:12.5px;padding:6px 12px"><i class="ti ti-file-upload"></i>Долоо хоногийн файл нэмэх<input type="file" multiple accept=".docx,.pdf,.txt" style="display:none" onchange="addEventWeekFiles(this)"></label>'
+    +'<label class="btn btn-p" style="background:#059669;cursor:pointer;font-size:12.5px;padding:6px 12px;color:#fff"><i class="ti ti-file-upload"></i>Долоо хоногийн файл нэмэх<input type="file" multiple accept=".docx,.pdf,.txt" style="display:none" onchange="addEventWeekFiles(this)"></label>'
     +'<span style="font-size:11.5px;color:#5f7292">Файлын нэрэнд огноо (жиш. 2026.07.20) байвал автоматаар танина, үгүй бол зүүн талын огноог ашиглана. Олон файлыг нэг дор сонгож болно.</span>'
     +'</div>';
   var headerHtml='<div style="font-size:13px;font-weight:500;margin-bottom:8px"><i class="ti ti-folder-open" style="margin-right:5px;color:#0EA5E9"></i>Долоо хоногийн эх файл</div>';
@@ -6043,9 +6043,9 @@ function renderList(){
   // Файлаас нэмэх товч
   let uploadBtn='';
   if(S.tab==='letters_in'||S.tab==='letters_out'){
-    uploadBtn='<label class="btn btn-p" style="background:#059669;cursor:pointer"><i class="ti ti-file-upload"></i>Файлаас нэмэх<input type="file" accept=".txt,.xlsx,.xls,.csv,.docx,.pdf" multiple style="display:none" onchange="extractLetterFromFile(this.files,\''+S.tab+'\');this.value=\'\'" /></label>';
+    uploadBtn='<label class="btn btn-p" style="background:#059669;cursor:pointer;color:#fff"><i class="ti ti-file-upload"></i>Файлаас нэмэх<input type="file" accept=".txt,.xlsx,.xls,.csv,.docx,.pdf" multiple style="display:none" onchange="extractLetterFromFile(this.files,\''+S.tab+'\');this.value=\'\'" /></label>';
   } else if(S.tab==='events'){
-    uploadBtn='<label class="btn btn-p" style="background:#059669;cursor:pointer"><i class="ti ti-file-upload"></i>Файлаас нэмэх<input type="file" accept=".txt,.xlsx,.xls,.csv,.docx,.pdf" multiple style="display:none" onchange="extractEventsFromFile(this.files);this.value=\'\'" /></label>';
+    uploadBtn='<label class="btn btn-p" style="background:#059669;cursor:pointer;color:#fff"><i class="ti ti-file-upload"></i>Файлаас нэмэх<input type="file" accept=".txt,.xlsx,.xls,.csv,.docx,.pdf" multiple style="display:none" onchange="extractEventsFromFile(this.files);this.value=\'\'" /></label>';
   }
 
   const addLabel=(S.tab==='letters_in'||S.tab==='letters_out'||S.tab==='events')?'Гараар нэмэх':'Нэмэх';
@@ -6208,12 +6208,12 @@ function openSettings(){
     <h3 style="margin-bottom:8px"><i class="ti ti-brand-google-drive" style="color:#0F9D58;margin-right:6px"></i>Хуваалцсан фолдер (олон хүн ашиглах бол)</h3>
     <p>Апп өгөгдөл өөрчлөгдөх бүрт сонгосон фолдер руу автоматаар нөөц (backup) хадгална — компьютер солиход, эсвэл өгөгдөл алдагдвал сэргээхэд хэрэглэнэ. Хэрэв та энэ фолдерыг өөр хэн нэгэнтэй хуваалцаж, хамтран ашигладаг бол — Drive дээрх хамгийн сүүлийн хувилбарыг АВТОМАТААР БИШ, зөвхөн доорх "Дахин ачаалах" товчоор ГАРААР шалгаж, баталгаажуулсны дараа л ачаална (санамсаргүй бусдын өөрчлөлтөөр өөрийн шинэ мэдээллээ дарагдуулахаас сэргийлэх зорилготой).</p>
     <div id="modal-drive-status" style="font-size:13px;color:#8aaace;margin-bottom:10px"></div>
-    <button class="btn btn-p" style="background:#0F9D58" onclick="closeModal();connectDrive()"><i class="ti ti-folder-open"></i>Хуваалцсан фолдер сонгох</button>
+    <button class="btn btn-p" style="background:#0F9D58;color:#fff" onclick="closeModal();connectDrive()"><i class="ti ti-folder-open"></i>Хуваалцсан фолдер сонгох</button>
     <button class="btn btn-g" style="margin-top:8px" onclick="closeModal();reloadFromDrive()"><i class="ti ti-refresh"></i>Drive-аас гараар дахин ачаалах</button>
     <hr style="border:none;border-top:.5px solid #16213a;margin:16px 0">
     <h3 style="margin-bottom:8px"><i class="ti ti-download" style="color:#0F9D58;margin-right:6px"></i>Гар нөөцлөлт (Google Drive-аас тусдаа)</h3>
     <p>Google Drive sync ямар нэг шалтгаанаар тасалдвал (интернэт тасрах, sync зогсох гэх мэт), доорх товчоор бүх өгөгдлөө шууд компьютертоо JSON файл болгож татаж авч болно. Энэ файлыг тогтмол (жишээ нь өдөр бүр ажил дуусахад) татаж, өөр газар (USB, имэйл, өөр фолдер) хадгалж байвал хамгийн найдвартай. Шаардлагатай үед доод товчоор буцааж ачаална.</p>
-    <button class="btn btn-p" style="background:#0F9D58" onclick="closeModal();downloadBackupFile()"><i class="ti ti-download"></i>Нөөц файл татах</button>
+    <button class="btn btn-p" style="background:#0F9D58;color:#fff" onclick="closeModal();downloadBackupFile()"><i class="ti ti-download"></i>Нөөц файл татах</button>
     <label class="btn btn-g" style="margin-top:8px;cursor:pointer;display:inline-flex;align-items:center;gap:8px"><i class="ti ti-upload"></i>Нөөц файлаас сэргээх<input type="file" accept=".json" style="display:none" onchange="handleBackupFileImport(this)"></label>
     ${canFullyEditItem()?(`<hr style="border:none;border-top:.5px solid #16213a;margin:16px 0">
     <h3 style="margin-bottom:8px"><i class="ti ti-shield-lock" style="color:#00d4ff;margin-right:6px"></i>Admin нэвтрэх нууц үг</h3>
