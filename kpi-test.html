@@ -6064,6 +6064,7 @@ function readForm(fields){const o={};fields.forEach(f=>{const el=document.getEle
 function homeKpiPanelHtml(){
   var items=getAllWorkItems();
   var total=items.length;
+  var clauseCount=countDistinctClauses(items);
   var done=items.filter(function(it){return it.done;}).length;
   var pct=total?Math.round(done/total*100):0;
   var docCount=distinctDocCount(items);
@@ -6075,7 +6076,7 @@ function homeKpiPanelHtml(){
 
   var heroStats=[
     {label:'Нийт баримт бичиг',val:docCount,color:'var(--accent-cyan)',icon:'ti-files'},
-    {label:'Нийт заалт',val:total,color:'#2f6fed',icon:'ti-list-check'},
+    {label:'Нийт заалт',val:clauseCount,color:'#2f6fed',icon:'ti-list-check'},
     {label:'Биелсэн',val:pct+'%',color:'var(--text-success)',icon:'ti-circle-check'},
     {label:'Хугацаа хэтэрсэн',val:overdueItems.length,color:'var(--text-danger)',icon:'ti-clock-exclamation'},
   ];
