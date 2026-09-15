@@ -8224,7 +8224,40 @@ function setSendTrackField(planKey,field,value){
   t[field]=value;
   saveData();render();
 }
+function setSendDueOverride(planKey,periodKey,value){
+  var t=ensureSendTrack(planKey);
+  if(!t.dueOverrides)t.dueOverrides={};
+  if(value){t.dueOverrides[periodKey]=value;}
+  else{delete t.dueOverrides[periodKey];}
+  saveData();render();
+}
+function sendOverrideFieldHtml(planKey,track,cadence){
+  if(!cadence||cadence==='once')return '';
+  var now=new Date();
+  var pk=sendPeriodKey(cadence,now);
+  var ov=(track.dueOverrides||{})[pk];
+  return '<div style="margin-top:3px;display:flex;align-items:center;gap:3px" title="Зөвхөн ОДООГИЙН мөчлөгт ('+esc(pk)+') нэг удаа хүчинтэй тусгай хугацаа. Бусад бүх мөчлөгт стандарт өдөр хэвээр үлдэнэ.">'
+    +'<span style="font-size:9px;color:var(--text-muted);white-space:nowrap">Тусгай:</span>'
+    +'<input type="date" value="'+esc(ov||'')+'" onchange="setSendDueOverride('+jsq(planKey)+','+jsq(pk)+',this.value)" style="flex:1;min-width:0;font-size:9.5px;padding:1px 2px;border-radius:5px;border:.5px solid '+(ov?'var(--brand-lawlib)':'var(--border)')+';background:transparent;color:'+(ov?'var(--brand-lawlib)':'var(--text-muted)')+'">'
+    +(ov?'<span style="cursor:pointer;color:var(--text-danger);font-size:11px;font-weight:700;padding:0 2px" onclick="setSendDueOverride('+jsq(planKey)+','+jsq(pk)+',\'\')" title="Тусгай хугацааг цуцлах, стандарт өдөр рүү буцаах">✕</span>':'')
+    +'</div>';
+}
 function sendDueDate(track,cadence,refDate){
+  refDate=refDate||new Date();
+  // v154: тухайн ОДОО референс огнооны багтаж буй мөчлөгт (periodKey) зориулсан
+  // нэг удаагийн тусгай due-date override байвал үүнийг эхэнд нь шалгаж, байвал
+  // шууд буцаана — track.dayOfMonth зэрэг стандарт тохиргоог огт өөрчлөхгүй,
+  // зөвхөн тухайн ганц мөчлөгт л нөлөөлнө.
+  var pkOv=sendPeriodKey(cadence,refDate);
+  var ovStr=track.dueOverrides&&track.dueOverrides[pkOv];
+  if(ovStr){
+    var ovParts=String(ovStr).split('-');
+    var ovDate=new Date(parseInt(ovParts[0]),parseInt(ovParts[1])-1,parseInt(ovParts[2]));
+    if(!isNaN(ovDate.getTime()))return ovDate;
+  }
+  return sendDueDateBase(track,cadence,refDate);
+}
+function sendDueDateBase(track,cadence,refDate){
   refDate=refDate||new Date();
   var y=refDate.getFullYear(),m=refDate.getMonth();
   var dom=parseInt(track.dayOfMonth)||25;
@@ -8883,7 +8916,7 @@ function renderSendMonitor(){
     var cadSelHtml='<select onchange="setSendCadence('+jsq(m.num)+',this.value)" style="font-size:11.5px;padding:3px 5px;border-radius:6px;border:.5px solid var(--border);background:transparent;color:var(--text)">'
       +'<option value="">— Тохируулаагүй —</option>'
       +cadOptsAll.map(function(c){return '<option value="'+c+'"'+(t.cadence===c?' selected':'')+'>'+SEND_CADENCE_LABELS[c]+'</option>';}).join('')
-      +'</select>'+sendDueFieldsHtml(m.num,t,t.cadence)+sendCadenceSetAtFieldHtml(m.num,t,t.cadence);
+      +'</select>'+sendDueFieldsHtml(m.num,t,t.cadence)+sendOverrideFieldHtml(m.num,t,t.cadence)+sendCadenceSetAtFieldHtml(m.num,t,t.cadence);
     var last=lastSendLogEntry(t);
     var lastHtml=last?(fmt(last.date)+(last.storageUrl?' <i class="ti ti-paperclip" style="font-size:11px;color:var(--accent-cyan2)"></i>':'')):'<span style="color:var(--text-dim)">—</span>';
     return '<tr>'
