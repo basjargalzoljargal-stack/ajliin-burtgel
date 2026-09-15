@@ -2273,14 +2273,17 @@ function sourceDocsPanelHtml(letter,opts){
     var list=files.map(function(f,i){
       var fpid='srcdoc_'+(letter?letter.id:'x')+'_'+i;
       FILE_PREVIEW_REG[fpid]=f;
+      var failed=!f.storageUrl;
       var dlBtn=f.storageUrl?('<a class="btn-cal" style="font-size:11px" href="'+f.storageUrl+'" download="'+esc(f.name)+'" target="_blank" rel="noopener" title="Татах"><i class="ti ti-download" style="font-size:11px"></i></a>'):'';
       var rmBtn=canManage?('<button class="btn-cal" style="font-size:11px;color:var(--text-danger)" onclick="removeFileFromLetter('+jsq(letter.id)+','+i+')" title="Устгах"><i class="ti ti-trash" style="font-size:11px"></i></button>'):'';
-      return '<div style="margin-bottom:8px;border:.5px solid var(--border);border-radius:8px;padding:8px">'
+      var warn=failed?('<div style="font-size:11px;color:var(--text-danger);margin-top:4px"><i class="ti ti-alert-triangle" style="margin-right:3px"></i>'+storageErrorMessage(f)+'</div>'):'';
+      return '<div style="margin-bottom:8px;border:.5px solid '+(failed?'var(--border-danger)':'var(--border)')+';border-radius:8px;padding:8px'+(failed?';background:var(--tint-danger)':'')+'">'
         +'<div style="display:flex;align-items:center;gap:6px">'
         +'<i class="ti '+(f.ext==='pdf'?'ti-file-type-pdf':'ti-file-text')+'" style="color:'+(f.ext==='pdf'?'var(--text-danger)':'var(--accent-cyan2)')+';font-size:15px;flex-shrink:0"></i>'
         +'<span style="font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(f.name)+'">'+esc(f.name)+'</span>'
         +'</div>'
         +'<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap"><button class="btn-cal" style="font-size:11px" onclick="toggleFilePreview('+jsq(fpid)+')"><i class="ti ti-eye" style="font-size:11px"></i>Харах</button>'+dlBtn+rmBtn+'</div>'
+        +warn
         +'<div id="'+fpid+'" style="display:none;margin-top:8px"></div>'
         +'</div>';
     }).join('');
@@ -8445,7 +8448,11 @@ async function confirmSendCheck(){
   var fromMatrix=!!S._sendModalFixedPeriod;
   S._sendModalLevel=null; S._sendModalFixedPeriod=null;
   closeModal();
-  showToast('Явуулсан гэж тэмдэглэлээ ✓','#059669');
+  if(entry.storageError){
+    showToast('Бичлэг хадгалагдлаа, ГЭХДЭЭ файл серверт хадгалагдсангүй — дахин хавсаргана уу','var(--text-danger)');
+  }else{
+    showToast('Явуулсан гэж тэмдэглэлээ ✓','#059669');
+  }
   render();
   if(fromMatrix)openSendMatrixModal(planKey);
 }
@@ -8768,12 +8775,14 @@ function removeFileFromPlan(planKey,fileIdx){
 }
 function fileChipListHtml(files,removeFnName,keyArg,canManage){
   return files.map(function(f,i){
+    var failed=!f.storageUrl;
     var dlBtn=f.storageUrl?('<a class="btn-cal" style="font-size:11px" href="'+f.storageUrl+'" download="'+esc(f.name)+'" target="_blank" rel="noopener" title="Татах"><i class="ti ti-download" style="font-size:11px"></i></a>'):'';
     var rmBtn=canManage?('<button class="btn-cal" style="font-size:11px;color:var(--text-danger)" onclick="'+removeFnName+'('+keyArg+','+i+')" title="Устгах"><i class="ti ti-trash" style="font-size:11px"></i></button>'):'';
-    return '<div style="margin-bottom:8px;border:.5px solid var(--border);border-radius:8px;padding:8px">'
+    var warn=failed?('<div style="font-size:11px;color:var(--text-danger);margin-top:4px"><i class="ti ti-alert-triangle" style="margin-right:3px"></i>'+storageErrorMessage(f)+'</div>'):'';
+    return '<div style="margin-bottom:8px;border:.5px solid '+(failed?'var(--border-danger)':'var(--border)')+';border-radius:8px;padding:8px'+(failed?';background:var(--tint-danger)':'')+'">'
       +'<div style="display:flex;align-items:center;gap:6px"><i class="ti '+(f.ext==='pdf'?'ti-file-type-pdf':'ti-file-text')+'" style="color:'+(f.ext==='pdf'?'var(--text-danger)':'var(--accent-cyan2)')+';font-size:15px;flex-shrink:0"></i>'
       +'<span style="font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(f.name)+'">'+esc(f.name)+'</span></div>'
-      +'<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">'+dlBtn+rmBtn+'</div></div>';
+      +'<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">'+dlBtn+rmBtn+'</div>'+warn+'</div>';
   }).join('');
 }
 function letterSourceFilesInlineHtml(letter){
